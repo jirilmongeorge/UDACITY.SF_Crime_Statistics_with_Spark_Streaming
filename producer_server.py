@@ -25,32 +25,17 @@ class ProducerServer(Producer):
     #TODO we're generating a dummy data
     def generate_data(self):
         with open(self.input_file) as file:
-            dict_array = json.load(file)
+            call = json.load(file)
             for line in dict_array:
-                print(f"Message: {line}")
                 message = self.dict_to_binary(line)
                 # TODO send the correct data
+                print(f"message:" {message})
                 self.produce(self.topic_name, message)
                 time.sleep(1)
 
     # TODO fill this in to return the json dictionary to binary
     def dict_to_binary(self, json_dict):
-        return json.dumps(
-        {
-            "crime_id": json_dict['crime_id'],
-            "original_crime_type_name": json_dict['original_crime_type_name'],
-            "report_date": json_dict['report_date'],
-            "call_date": json_dict['call_date'],
-            "offense_date": json_dict['offense_date'],
-            "call_time": json_dict['call_time'],
-            "call_date_time": json_dict['call_date_time'],
-            "disposition": json_dict['disposition'],
-            "address": json_dict['address'],
-            "city": json_dict['city'],
-            "state": json_dict['state'],
-            "agency_id": json_dict['agency_id'],
-            "address_type": json_dict['address_type'],
-        })
+        return json.dumps(json_dict)
 
 
 
