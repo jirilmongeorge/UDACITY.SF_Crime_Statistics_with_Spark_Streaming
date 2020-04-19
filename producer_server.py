@@ -27,6 +27,7 @@ class ProducerServer(Producer):
         with open(self.input_file) as file:
             dict_array = json.load(file)
             for line in dict_array:
+                print(f"Message: {line}")
                 message = self.dict_to_binary(line)
                 # TODO send the correct data
                 self.produce(self.topic_name, message)

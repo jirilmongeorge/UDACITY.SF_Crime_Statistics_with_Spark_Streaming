@@ -18,7 +18,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 progres
 ### Kafka
 kafka-topics --list --zookeeper localhost:2181
 
-kafka-console-consumer --bootstrap-server localhost:9092 --topic "com.udacity.sfo.police.calls" --from-beginning
+kafka-console-consumer --bootstrap-server localhost:9092 --topic "com.udacity.police.sfo.calls" --from-beginning
 
 
 ## 01 Producer Server
