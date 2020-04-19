@@ -3,7 +3,7 @@ from pathlib import Path
 
 def run_kafka_server():
 	# TODO get the json file path
-    input_file = f"{Path(__file__).parents[0]}/police-department-calls-for-service.json"
+    input_file = f"../{Path(__file__).parents[0]}/police-department-calls-for-service.json"
 
     # TODO fill in blanks
     calls_producer = producer_server.ProducerServer(
