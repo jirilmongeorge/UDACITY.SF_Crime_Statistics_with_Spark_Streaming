@@ -1,6 +1,7 @@
 from kafka import KafkaProducer
 from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient, NewTopic
+from dataclasses import dataclass, field
 
 import json
 import time
@@ -25,17 +26,16 @@ class ProducerServer(Producer):
     #TODO we're generating a dummy data
     def generate_data(self):
         with open(self.input_file) as file:
-            call = json.load(file)
-            for line in dict_array:
-                message = self.dict_to_binary(line)
+            calls = json.load(file)
+            for call in calls:
+                #message = self.dict_to_binary(call)
                 # TODO send the correct data
-                print(f"message:" {message})
-                self.produce(self.topic_name, message)
+                self.produce(self.topic_name, Call(call).serialize())
                 time.sleep(1)
 
     # TODO fill this in to return the json dictionary to binary
     def dict_to_binary(self, json_dict):
-        return json.dumps(json_dict)
+        return Call(json_dict)
 
 
 
@@ -70,3 +70,44 @@ class ProducerServer(Producer):
                     print(f"Topic {self.topic_name} created!")
                 except Exception as e:
                     print(f"Topic already created! {self.topic_name}")
+
+
+@dataclass
+class Call:
+
+    def __init__(self, call):
+        self.crime_id = call.get('crime_id')
+        self.original_crime_type_name = call.get('original_crime_type_name')
+        self.report_date = call.get('report_date')
+        self.call_date = call.get('call_date')
+        self.offense_date = call.get('offense_date')
+        self.call_time = call.get('call_time')
+        self.call_date_time = call.get('call_date_time')
+        self.disposition = call.get('disposition')
+        self.address = call.get('address')
+        self.city = call.get('city')
+        self.state = call.get('state')
+        self.agency_id = call.get('agency_id')
+        self.address_type = call.get('address_type')
+        self.common_location = call.get('common_location')
+
+
+    def serialize(self):
+        return json.dumps(
+            {
+                "crime_id": self.crime_id,
+                "original_crime_type_name": self.original_crime_type_name,
+                "report_date": self.report_date,
+                "call_date": self.call_date,
+                "offense_date": self.offense_date,
+                "call_time": self.call_time,
+                "call_date_time": self.call_date_time,
+                "disposition": self.disposition,
+                "address": self.address,
+                "city": self.city,
+                "state": self.state,
+                "agency_id": self.agency_id,
+                "address_type": self.address_type,
+                "common_location": self.common_location
+            }
+        )
