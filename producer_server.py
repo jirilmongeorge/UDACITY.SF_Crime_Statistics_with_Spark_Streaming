@@ -28,14 +28,14 @@ class ProducerServer(Producer):
         with open(self.input_file) as file:
             calls = json.load(file)
             for call in calls:
-                #message = self.dict_to_binary(call)
+                message = self.dict_to_binary(ServiceCall(call).serialize())
                 # TODO send the correct data
-                self.produce(self.topic_name, Call(call).serialize())
+                self.produce(self.topic_name, message)
                 time.sleep(1)
 
     # TODO fill this in to return the json dictionary to binary
     def dict_to_binary(self, json_dict):
-        return Call(json_dict)
+        return json_dict.encode('utf-8')
 
 
 
@@ -73,7 +73,7 @@ class ProducerServer(Producer):
 
 
 @dataclass
-class Call:
+class ServiceCall:
 
     def __init__(self, call):
         self.crime_id = call.get('crime_id')
