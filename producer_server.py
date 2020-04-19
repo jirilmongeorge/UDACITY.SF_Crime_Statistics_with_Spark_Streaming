@@ -27,7 +27,7 @@ class ProducerServer(Producer):
         with open(self.input_file) as file:
             dict_array = json.load(file)
             for line in dict_array:
-                message = self.dict_to_binary(dict_array)
+                message = self.dict_to_binary(line)
                 # TODO send the correct data
                 self.produce(self.topic_name, message)
                 time.sleep(1)
@@ -49,7 +49,7 @@ class ProducerServer(Producer):
             "state": json_dict['state'],
             "agency_id": json_dict['agency_id'],
             "address_type": json_dict['address_type'],
-        }).encode('utf-8')
+        })
 
 
 
