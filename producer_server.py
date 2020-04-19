@@ -10,7 +10,7 @@ class ProducerServer(Producer):
 
     def __init__(self, input_file, topic, bootstrap_servers, client_id):
         self.input_file = input_file
-        self.topic = topic
+        self.topic_name = topic
         self.broker_properties = {
             "BROKER_URL" : bootstrap_servers
         }
@@ -29,7 +29,7 @@ class ProducerServer(Producer):
             for line in dict_array:
                 message = self.dict_to_binary(dict_array)
                 # TODO send the correct data
-                self.produce(self.topic, message)
+                self.produce(self.topic_name, message)
                 time.sleep(1)
 
     # TODO fill this in to return the json dictionary to binary
