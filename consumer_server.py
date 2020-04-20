@@ -30,7 +30,7 @@ class ConsumerServer(Consumer):
 
         if self.topic_exists():
             self.subscribe([self.topic_name_pattern], on_assign=self.on_assign)
-        else
+        else:
             raise KafkaException
 
     def on_assign(self, consumer, partitions):
@@ -94,6 +94,7 @@ class ConsumerServer(Consumer):
 
 
 
+
 @dataclass
 class ServiceCall:
 
@@ -133,3 +134,29 @@ class ServiceCall:
                 "common_location": self.common_location
             }
         )
+
+
+def create_consumer():
+
+    consumer = consumer_server.ConsumerServer(
+        topic_name_pattern="com.udacity.police.sfo.calls",
+        bootstrap_servers="PLAINTEXT://localhost:9092",
+        group_id="0",
+        offset_earliest=True
+    )
+
+    return consumer
+
+
+def start_read_server():
+    calls_consumer = create_consumer()
+    try:
+        calls_consumer.consume()
+    except KeyboardInterrupt as e:
+        calls_consumer.close()
+
+
+
+
+if __name__ == "__main__":
+    start_read_server()
