@@ -1,8 +1,16 @@
 ### Start Kafka / ZK
 echo 'schema.registry.url=http://localhost:9092' >> /etc/kafka/connect-distributed.properties
-nohup systemctl start confluent-zookeeper > startup.log &
-nohup systemctl start confluent-kafka > startup.log &
+
+## Confluent Version
+nohup systemctl start confluent-zookeeper > setup/startup_zK.log &
+nohup systemctl start confluent-kafka > setup/startup_Kf.log &
 sh start.sh
+
+## apache Version
+
+nohup /usr/bin/zookeeper-server-start config/zookeeper.properties > setup/startup_zK.log &
+nohup /usr/bin/kafka-server-start config/server.properties > setup/startup_Kf.log &
+
 
 ### Submitting Spark Kafka Ingest App
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ingest_kafka_data.py
