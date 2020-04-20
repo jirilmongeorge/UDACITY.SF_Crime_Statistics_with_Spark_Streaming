@@ -86,10 +86,10 @@ sh 3_data_stream/02_start_data_stream.sh
 
 __3.1 Validate Stream with the Progress Report & Spark UI__
 #### Aggregation_Table
-![agg](screenshots/screenshot02.png)
+![agg](Screenshots/screenshot02.png)
 #### Progress Report
-![agg](screenshots/screenshot03.png)
+![agg](Screenshots/screenshot03.png)
 
 #### Spark UI
-![agg](screenshots/sparkui.png)
+![agg](Screenshots/sparkui.png)
 > Unfortunately the streaming tab is not working on the workspace environment.
