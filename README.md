@@ -91,3 +91,4 @@ __3.1 Validate Stream with the Progress Report & Spark UI__
 
 #### Spark UI
 ![agg](screenshots/sparkui.png)
+> Unfortunately the streaming tab is not working on the workspace environment.
