@@ -3,13 +3,16 @@ from confluent_kafka import Consumer, KafkaException
 from confluent_kafka.admin import AdminClient, NewTopic
 from dataclasses import dataclass, field
 
+import asyncio
 import json
 import time
+import logging
 
+logger = logging.getLogger(__name__)
 
 class ConsumerServer(Consumer):
 
-    def __init__(self, topic_name_pattern, bootstrap_servers, group_id, offset_earliest=False,sleep_secs=1.0,consume_timeout=0.1):
+    def __init__(self, topic_name_pattern, bootstrap_servers, group_id, offset_earliest=False,sleep_secs=1.0,consume_timeout=0.3):
 
         self.broker_properties = {
             "BROKER_URL" : bootstrap_servers
@@ -61,10 +64,11 @@ class ConsumerServer(Consumer):
             num_results = 1
             while num_results > 0:
                 num_results = self._consume()
-            await time.sleep(self.sleep_secs)
+            await asyncio.sleep(self.sleep_secs)
 
     def _consume(self):
         """Polls for a message. Returns 1 if a message was received, 0 otherwise"""
+        await asyncio.sleep(2.5)
         while True:
             message = self.poll(self.consume_timeout)
             if message is None:
@@ -147,11 +151,16 @@ def create_consumer():
 
     return consumer
 
+async def consume_messages(consumer):
+    t1 = asyncio.create_task(consumer.consume())
+    await t1
+
+
 
 def start_read_server():
     calls_consumer = create_consumer()
     try:
-        calls_consumer.consume()
+        asyncio.run(consume_messages(calls_consumer))
     except KeyboardInterrupt as e:
         calls_consumer.close()
 
