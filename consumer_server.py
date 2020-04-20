@@ -1,4 +1,5 @@
 
+import confluent_kafka
 from confluent_kafka import Consumer, KafkaException
 from confluent_kafka.admin import AdminClient, NewTopic
 from dataclasses import dataclass, field
@@ -44,7 +45,7 @@ class ConsumerServer(Consumer):
 
         if self.offset_earliest:
             for partition in partitions:
-                partition.offset = confluent_kafka.OFFSET_BEGINNNING
+                partition.offset = -2
 
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         self.assign(partitions)
@@ -56,7 +57,7 @@ class ConsumerServer(Consumer):
         #       See: https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.list_topics
         client = AdminClient({"bootstrap.servers": self.broker_properties['BROKER_URL']})
         cluster_metadata = client.list_topics()
-        return cluster_metadata.topics.get(self.topic_name) is not None
+        return cluster_metadata.topics.get(self.topic_name_pattern) is not None
 
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
@@ -68,7 +69,6 @@ class ConsumerServer(Consumer):
 
     def _consume(self):
         """Polls for a message. Returns 1 if a message was received, 0 otherwise"""
-        await asyncio.sleep(2.5)
         while True:
             message = self.poll(self.consume_timeout)
             if message is None:
@@ -85,8 +85,6 @@ class ConsumerServer(Consumer):
         """Process the incoming message"""
         if message.topic() == "com.udacity.police.sfo.calls":
             call_record = ServiceCall(json.loads(message.value()))
-
-            print("Message Received!")
             print(f"{call_record.serialize()}")
 
 
@@ -142,7 +140,7 @@ class ServiceCall:
 
 def create_consumer():
 
-    consumer = consumer_server.ConsumerServer(
+    consumer = ConsumerServer(
         topic_name_pattern="com.udacity.police.sfo.calls",
         bootstrap_servers="PLAINTEXT://localhost:9092",
         group_id="0",
