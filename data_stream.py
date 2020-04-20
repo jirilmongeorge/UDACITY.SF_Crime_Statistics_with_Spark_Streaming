@@ -43,7 +43,7 @@ def run_spark_job(spark):
 
     # TODO extract the correct column from the kafka input resources
     # Take only value and convert it to String
-    kafka_df = df.selectExpr(psf.col("value").cast("string"))
+    kafka_df = df.selectExpr("CAST(value AS STRING)")
 
     service_table = kafka_df\
         .select(psf.from_json(psf.col('value'), schema).alias("DF"))\
@@ -64,7 +64,7 @@ def run_spark_job(spark):
             .format("console") \
             .queryName("agg_original_crime") \
             .outputMode("complete") \
-            .trigger(processingTime='1 minute') \
+            .trigger(processingTime='5 seconds') \
             .option("truncate", "false") \
             .start()
 
@@ -87,6 +87,7 @@ def run_spark_job(spark):
                        .writeStream \
                        .format("console") \
                        .queryName("disp_joined_table") \
+                       .trigger(once=True) \
                        .option("truncate", "false") \
                        .start()
 
