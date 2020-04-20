@@ -1,5 +1,6 @@
 # SF Crime Statistics with Spark Streaming
 ## UDACITY Data Streaming Nanodegree - Project II
+
 ---
 
 ### Project Overview
